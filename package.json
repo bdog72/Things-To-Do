@@ -1,0 +1,24 @@
+{
+    "name": "parcel-template",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "parcel index.html",
+        "build": "parcel build index.html"
+    },
+    "author": "Brian Bycynski",
+    "license": "ISC",
+    "devDependencies": {
+        "eslint": "^5.8.0",
+        "eslint-config-airbnb": "^17.1.0",
+        "eslint-plugin-import": "^2.14.0",
+        "eslint-plugin-jsx-a11y": "^6.1.2",
+        "eslint-plugin-react": "^7.11.1",
+        "node-sass": "^4.10.0",
+        "parcel-bundler": "^1.10.3"
+    },
+    "dependencies": {
+        "bootstrap": "^4.1.3"
+    }
+}
