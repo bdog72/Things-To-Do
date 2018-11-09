@@ -105,13 +105,23 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   // Override the current require with this new one
   return newRequire;
 })({"Javascript/app.js":[function(require,module,exports) {
+/* eslint-disable */
 // get elements
 var itemForm = document.querySelector('#itemForm');
 var itemInput = document.querySelector('#itemInput');
-var itemList = document.querySelector('.item-list'); // const clearBtn = document.querySelector('#clear-btn');
+var itemList = document.querySelector('.item-list');
+var clearBtn = document.querySelector('#clear-list');
+var feedback = document.querySelector('.feedback'); // let itemData = [];
 
-var feedback = document.querySelector('.feedback');
-var itemData = []; // form submission
+var itemData = JSON.parse(localStorage.getItem('list')) || [];
+
+if (itemData.length > 0) {
+  itemData.forEach(function (singleItem) {
+    itemList.insertAdjacentHTML('beforeend', "\n      <div class='item my-3'>\n        <h5 class=\"item-name text-capitalize\">".concat(singleItem, "</h5>\n        <div class=\"item-icons\">\n        <a href=\"#\" class=\"complete-item mx-2 item-icon\"><i class=\"far fa-check-circle\"></i></a>\n        <a href=\"#\" class=\"edit-item mx-2 item-icon\"><i class=\"far fa-edit\"></i></a>\n        <a href=\"#\" class=\"delete-item item-icon\"><i class=\"far fa-times-circle\"></i></a>\n        </div>\n      </div>\n    "));
+    handleItem(singleItem);
+  });
+} // form submission
+
 
 itemForm.addEventListener('submit', function (e) {
   e.preventDefault();
@@ -127,7 +137,8 @@ itemForm.addEventListener('submit', function (e) {
 
     itemData.push(textValue); // console.log(itemData);
     // local storage
-    // add event listeners to icons
+
+    localStorage.setItem('list', JSON.stringify(itemData)); // add event listeners to icons
 
     handleItem(textValue);
   }
@@ -149,8 +160,51 @@ function addItem(value) {
 }
 
 function handleItem(textValue) {
-  var items = itemList.querySelectorAll('.item'); // console.log(items);
-} // document.querySelector('.item-icon').classList.add('showItem');
+  var items = itemList.querySelectorAll('.item');
+  items.forEach(function (item) {
+    if (item.querySelector('.item-name').textContent === textValue) {
+      // complete the event listener
+
+      /* eslint func-names: ["error", "never"] */
+      item.querySelector('.complete-item').addEventListener('click', function () {
+        item.querySelector('.item-name').classList.toggle('completed');
+        this.classList.toggle('visibility');
+      }); // edit event listener
+
+      /* eslint func-names: ["error", "never"] */
+
+      item.querySelector('.edit-item').addEventListener('click', function () {
+        itemInput.value = textValue;
+        itemList.removeChild(item);
+        itemData = itemData.filter(function (item) {
+          return item !== textValue;
+        });
+        localStorage.setItem('list', JSON.stringify(itemData));
+      }); // delete event listener
+
+      item.querySelector('.delete-item').addEventListener('click', function () {
+        itemList.removeChild(item);
+        itemData = itemData.filter(function (item) {
+          return item !== textValue;
+        });
+        localStorage.setItem('list', JSON.stringify(itemData));
+        showFeedback('item deleted', 'success');
+      });
+    }
+  });
+}
+
+clearBtn.addEventListener('click', function () {
+  itemData = [];
+  localStorage.removeItem('list');
+  var items = itemList.querySelectorAll('.item');
+
+  if (items.length > 0) {
+    items.forEach(function (item) {
+      itemList.removeChild(item);
+    });
+  }
+});
 },{}],"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
@@ -263,7 +317,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63984" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52260" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);
